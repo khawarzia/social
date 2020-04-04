@@ -419,7 +419,7 @@ def SubscriberView(request):
 
 
 def add_to_fb_and_twitter(name,passs,post_content,check):
-    cd_url = BASE_DIR + '\\apps\\static\\chromedriver.exe'
+    cd_url = '/root/bin/chromedriver'
     if 'facebook' == check:
     #facebook portion
         opt = webdriver.ChromeOptions()
