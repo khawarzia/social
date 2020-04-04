@@ -1,0 +1,53 @@
+{% extends "Base.html" %}
+{% load static %}
+{% block title %}
+{% if name %}
+    Change Credentials
+{% else %}
+    Login
+{% endif %}
+{% endblock %}
+{% block content %}
+    
+    <div class="container">
+<center>
+            <div class="card" style="width: 25rem;" >
+                    <div class="card-header btn-warning">
+                            Social Credentials
+                    </div>
+                    <div class="card-body">
+
+                            
+                            <form method="POST">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="exampleUserName1" >Social UserName</label>
+                                    <input type="text" name="username" required id="id_username"  class="form-control" 
+                                     placeholder="Enter User" {% if name %} value="{{name}}" {% endif %}>
+                                </div >
+                                <div class="form-group">
+                                <label class = "exampleInputPassword1">Social Password</label>
+                                <input type="password" name="password" required id="id_password"  class="form-control"  placeholder="Enter Password">
+                                <div>
+
+                            </div>
+                            <br>
+                                <input type="hidden" next= "next" value="{{ next }}">
+                                <center>
+                                <button type="submit" class="btn btn-warning" value="Log-in">
+                                    {% if not name %}
+                                        Log-in
+                                    {% else %}
+                                        Change
+                                    {% endif %}
+                                </button>
+                            </center>
+                            </form>
+                            <!-- <a href="{% url 'register' %}"><center><strong>Register Yourself ! Sign Up</strong></center></a>                     -->
+                    </div>
+                  </div>
+                </center>
+
+    </div>
+    
+{% endblock content %}

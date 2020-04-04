@@ -1,0 +1,7 @@
+{% autoescape off %}
+Here is messgae {{ message }}
+
+Please click on the link below to subscribe the newsletter:
+
+http://{{ domain }}{% url 'subscribe' %}
+{% endautoescape %}

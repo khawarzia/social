@@ -1,0 +1,61 @@
+{% extends 'Base.html' %}
+{% load static %}
+
+
+    {% block content %}
+
+
+    <div class="container">
+    
+    <center>{% if query %}
+       
+        {% if search_user %}
+          {% for i in search_user %}
+                 
+          <div class="card" style=" width: auto;">
+            <div class="shadow p-3 bg-white rounded">
+
+                <div class="card-header text-center bg-transparent border-0">
+                    <h3>
+                            {{i.title}}
+                    </h3>
+
+                </div>
+               <div class="card-body">
+                  <p><strong> Compaign Data</strong> </p>
+                  <p><strong> Message:</strong>  {{i.message}}</p> 
+                  <p><strong> Created at:</strong>  {{i.created_on}}</p> <br>
+                  </div></div></div><br>
+          {% endfor %}
+          {% else %}
+          <h5 style="padding-top: 25%">No results found</h5></center>
+ 
+          {% endif %}
+          {% else %}
+    <center>
+          <h5 style="padding-top: 25%">Enter User Name</h5></center>
+      
+        {% endif %}
+    
+    </center>
+    </div>
+    {% endblock content %}
+    <!-- ##### All Javascript Script ##### -->
+    <!-- jQuery-2.2.4 js -->
+    <script src="{% static 'music/js/jquery-2.2.4.min.js' %}"></script>
+    <!-- Popper js -->
+    <script src="{% static 'music/js/popper.min.js' %}"></script>
+    <!-- Bootstrap js -->
+    <script src="{% static 'music/js/bootstrap.min.js' %}"></script>
+    <!-- All Plugins js -->
+    <script src="{% static  'music/js/plugins.js' %}"></script>
+    <!-- Active js -->
+    <script src="{% static 'music/js/active.js' %}"></script>
+
+    </body>
+    </html>
+
+
+
+
+

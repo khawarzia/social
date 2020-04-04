@@ -1,0 +1,118 @@
+{% extends 'Base.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+a{
+ color: gray;
+ 
+}
+.link{
+  padding: 0%;
+}
+</style>
+
+
+{% if request.user.is_authenticated %}
+
+<div class="container">
+  <h2>My Compaigns</h2>
+<br>
+  <ul class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" href="#home">All</a></li>
+    <li><a data-toggle="tab" href="#Starred"><span style="font-size:110%;color:orange;">&starf;</span>&nbsp;&nbsp;Starred</a></li>
+    <li><a data-toggle="tab" href="#Draft"><span class="dot"></span> Draft</a></li>
+    <li><a data-toggle="tab" href="#Scheduled"><span class="dot" style="background-color: orange;"></span> Scheduled</a></li>
+    <li><a data-toggle="tab" href="#Sent"><span class="dot" style="background-color: green;"></span> Sent</a></li>
+    <li><a data-toggle="tab" href="#Archived">Archived</a></li>
+  </ul>
+
+  <div class="tab-content">
+    <div id="home" class="tab-pane fade in active">
+      <h3>HOME</h3>
+      <div class="row">
+        <div class="col-md-4">
+          
+          <div class="form-group has-search">
+            <form action="{% url 'search' %}" method="GET" >
+            <span class="fa fa-search form-control-feedback"></span>
+            {% csrf_token %}
+            <input type="text" name="query" class="form-control" placeholder="Search">
+          </form>
+          </div>
+        </div>
+        <div class="col-md-4"></div>
+        <div class="col-md-1"></div>
+        <div class="col-md-1">
+          <a  href="{% url 'social-post' %}" class="btn btn-warning" >Social Post</a >  
+          </div>
+        <div class="col-md-1" style="left: 2%;">  
+          <a  href="{% url 'post' %}" class="btn btn-warning" >Email-Newsletter</a >
+            </div>
+
+         
+      </div>
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Subject</th>
+            <th>Emails</th>
+            <th>Delivery Date</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in post %}
+
+          <tr>
+            <td> <a href="{% url 'detail' i.id %}"> {{i.title}}</a></td>
+            <td>{{i.message}}</td>
+            <td>{{i.emails}}</td>
+            <td>{{i.delivery_date}}</td>
+            <td>  <a href="{% url 'edit' i.id %}"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+            </td>
+          </tr>
+          {% endfor %}
+
+          
+        </tbody>
+      </table>
+    
+    
+    
+    
+    </div>
+
+
+
+
+
+
+
+
+    <div id="Starred" class="tab-pane fade">
+      <h3>Menu 1</h3>
+      <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    </div>
+    <div id="Draft" class="tab-pane fade">
+      <h3>Menu 2</h3>
+      <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+    </div>
+    <div id="Scheduled" class="tab-pane fade">
+      <h3>Menu 3</h3>
+      <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+    </div>
+    <div id="Sent" class="tab-pane fade">
+      <h3>Menu 3</h3>
+      <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+    </div>
+    <div id="Archived" class="tab-pane fade">
+      <h3>Menu 3</h3>
+      <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+    </div>
+  </div>
+</div>
+
+  {% endif %}
+  {% endblock %}
