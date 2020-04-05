@@ -27,7 +27,7 @@ DEBUG = True
 
 SEND = False
 
-ALLOWED_HOSTS = ['159.89.83.41','127.0.0.1']
+ALLOWED_HOSTS = ['64.227.3.68','127.0.0.1']
 
 
 # Application definition
