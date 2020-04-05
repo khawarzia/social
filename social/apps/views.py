@@ -419,7 +419,7 @@ def SubscriberView(request):
 
 
 def add_to_fb_and_twitter(name,passs,post_content,check):
-    cd_url = BASE_DIR + '\\apps\\static\\chromedriver.exe'
+    cd_url = '/usr/bin/chromedriver'
     if 'facebook' == check:
     #facebook portion
         opt = webdriver.ChromeOptions()
@@ -500,7 +500,7 @@ def add_to_insta(name,passs,post_content):
     chrome_options.add_experimental_option('excludeSwitches',['enable-automation'])
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--user-agent=Mozilla/5.0 (iPhone; CPU iPhone OS 10_3 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) CriOS/56.0.2924.75 Mobile/14E5239e Safari/602.1')
-    driver = webdriver.Chrome(executable_path=BASE_DIR + '\\apps\\static\\chromedriver.exe',options=chrome_options)
+    driver = webdriver.Chrome(executable_path='/usr/bin/chromedriver',options=chrome_options)
 
     driver.get("https://www.instagram.com/accounts/login/?next=/explore/")
 
