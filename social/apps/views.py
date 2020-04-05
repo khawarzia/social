@@ -426,7 +426,7 @@ def add_to_fb_and_twitter(name,passs,post_content,check):
         opt.add_argument('--headless')
         opt.add_argument('--no-sandbox')
         opt.add_experimental_option('excludeSwitches',['enable-automation'])
-        driver = webdriver.Chrome(executable_path=cd_url,options=opt)
+        driver = webdriver.Chrome(options=opt)
         driver.get('https://web.facebook.com/')
         # start login
         while True:
