@@ -7,7 +7,7 @@ from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.conf import settings
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMessage,get_connection
 from .tokens import account_activation_token
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
@@ -23,6 +23,8 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 import time
+import instabot
+import os
 
 def handler404(request):
     return render(request, '404.html', status=404)
@@ -44,6 +46,7 @@ def dashboard(request):
 def social_post(request):
     template = 'social/new-post.html'
     context = {}
+    form = imageform(request.POST or None,request.FILES or None)
     try:
         fbobj = facebook_handle.objects.get(user=request.user)
         context['fbobj'] = fbobj
@@ -81,13 +84,35 @@ def social_post(request):
         except:
             d = 'off'
         if b == 'on' and fbobj != None:
-            context['ret1'] = add_to_fb_and_twitter(fbobj.username,fbobj.getpass(),a,'facebook')
+            context['ret1'] = add_to_fb(fbobj.username,fbobj.getpass(),a)
+            if request.POST['page_url'] and context['ret1'] == 'Post made successfully on facebook':
+                post_to_fb_page(fbobj.username,fbobj.getpass(),a,request['page_url'])
         if c == 'on' and twobj != None:
-            context['ret2'] = add_to_fb_and_twitter(twobj.username,twobj.getpass(),a,'twitter')
+            context['ret2'] = add_to_twitter(twobj.username,twobj.getpass(),a,request.POST['verify'])
+            if context['ret2'] == 'Please enter the verification code send to you by twitter':
+                context['verifycheck'] = True
+            else:
+                context['verifycheck'] = False
         if d == 'on' and inobj != None:
-            add_to_insta(inobj.username,inobj.getpass(),a)
-        return render(request,template,context)
+            if form.is_valid():
+                form.save()
+                obj = instaimg.objects.last()
+                k = obj.img.name
+                k = strip6(BASE_DIR) + '\\media\\temp\\'+ k.split('/')[1]
+                context['ret3'] = add_to_insta(inobj.username,inobj.getpass(),a,k)
+                obj.delete()
+                try:
+                    os.remove(k+'.REMOVE_ME')
+                except:
+                    pass
+            else:
+                context['ret3'] = 'Please select an image in order to post on Instagram'
+    form = imageform()
+    context['form'] = form
     return render(request,template,context)
+
+def strip6(a):
+    return a[0:len(a)-7]
 
 def facebook_login(request):
     template = 'social/login.html'
@@ -344,7 +369,6 @@ def PostView(request):
         if form.is_valid(): 
             new = form.save(commit=False)
             new.author=request.user
-
           ########### Emails ####################
             current_site = get_current_site(request)
             message = render_to_string('music/compaign.html', {
@@ -356,8 +380,26 @@ def PostView(request):
             emails=[]
             for i in subs:
                 emails.append(i.Email)
-            email = EmailMessage(mail_subject, message, to=[emails])
+            if request.POST['user'] and request.POST['pass']:
+                try:
+                    obj = email_handle.objects.get(user=request.user)
+                    obj.username = request.POST['user']
+                    obj.save()
+                    obj.givepass(request.POST['pass'])
+                    obj.save()
+                except:
+                    obj = email_handle()
+                    obj.user = request.user
+                    obj.username = request.POST['user']
+                    obj.save()
+                    obj.givepass(request.POST['pass'])
+                    obj.save()
+            else:
+                obj = email_handle.objects.get(user=request.user)
+            con = get_connection(host='smtp.gmail.com',port=587,username=obj.username,password=obj.getpass(),use_tls=True)
+            email = EmailMessage(mail_subject, message, to=[emails],from_email=obj.username, connection=con)
             email.send()
+            con.close()
             ######################################
             new.emails = len(emails)
             new.save()
@@ -366,6 +408,11 @@ def PostView(request):
     context={
         'form':form
     }
+    try:
+        obj = email_handle.objects.get(user=request.user)
+        context['emobj'] = obj
+    except:
+        context['emobj'] = False
     return render(request,'music/postview.html',context)
 
 
@@ -418,119 +465,129 @@ def SubscriberView(request):
 
 
 
-def add_to_fb_and_twitter(name,passs,post_content,check):
+def add_to_fb(name,passs,post_content):
     cd_url = BASE_DIR + '\\apps\\static\\chromedriver.exe'
-    if 'facebook' == check:
-    #facebook portion
-        opt = webdriver.ChromeOptions()
-        opt.add_argument('--headless')
-        opt.add_argument('--no-sandbox')
-        opt.add_experimental_option('excludeSwitches',['enable-automation'])
-        driver = webdriver.Chrome(executable_path=cd_url,options=opt)
-        driver.get('https://web.facebook.com/')
-        # start login
-        while True:
-            try:
-                driver.find_element_by_xpath('//*[@id="email"]').send_keys(name)
-                driver.find_element_by_xpath('//*[@id="pass"]').send_keys(passs)
-                break
-            except:
-                time.sleep(1)
-        driver.find_element_by_xpath('//*[@id="u_0_b"]').click()
-        # end login
-        start_time = time.time()
-        # start post
-        while True:
-            try:
-                elems = driver.find_elements_by_tag_name('textarea')
-                elems[0].send_keys(post_content)
-                break
-            except:
-                time.sleep(1)
-                if (time.time() - start_time >= 25):
-                    return 'Facebook credentials are not correct!'
-        while True:
-            try:
-                elems = driver.find_elements_by_tag_name('button')
-                for i in elems:
-                    if i.text == 'Post':
-                        i.click()
-                break
-            except:
-                pass
-        # end post
-        time.sleep(5)
-        driver.quit()
-    if 'twitter' == check:
-        # twitter portion
-        opt = webdriver.chrome.options.Options()
-        opt.add_argument('--headless')
-        opt.add_argument('--no-sandbox')
-        opt.add_experimental_option('excludeSwitches',['enable-automation'])
-        driver = webdriver.Chrome(executable_path=cd_url,options=opt)
-        driver.get('https://twitter.com/login')
-        # start login
-        while True:
-            try:
-                driver.find_element_by_xpath('//*[@id="react-root"]/div/div/div[2]/main/div/div/form/div/div[1]/label/div/div[2]/div/input').send_keys(name)
-                driver.find_element_by_xpath('//*[@id="react-root"]/div/div/div[2]/main/div/div/form/div/div[2]/label/div/div[2]/div/input').send_keys(passs)
-                break
-            except:
-                time.sleep(1)
-        driver.find_element_by_xpath('//*[@id="react-root"]/div/div/div[2]/main/div/div/form/div/div[3]/div/div/span/span').click()
-        # end login
-        start_time = time.time()
-        # start tweet
-        while True:
-            try:
-                driver.find_element_by_xpath('//*[@id="react-root"]/div/div/div[2]/main/div/div/div/div/div/div[2]/div/div[2]/div[1]/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div/div/div/div[1]/div/div/div/div[2]/div/div/div/div').send_keys(post_content)
-                break
-            except:
-                time.sleep(1)
-                if (time.time() - start_time >= 15):
-                    return 'Twitter credentials are not correct!'
-        driver.find_element_by_xpath('//*[@id="react-root"]/div/div/div[2]/main/div/div/div/div/div/div[2]/div/div[2]/div[1]/div/div/div/div[2]/div[2]/div/div/div[2]/div[3]/div').click()
-        # end tweet
-        time.sleep(5)
-        driver.quit()
-    return ('Post made successfully on '+check)
-
-def add_to_insta(name,passs,post_content):
-    chrome_options = Options()
-    chrome_options.add_experimental_option('excludeSwitches',['enable-automation'])
-    chrome_options.add_argument('--no-sandbox')
-    chrome_options.add_argument('--user-agent=Mozilla/5.0 (iPhone; CPU iPhone OS 10_3 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) CriOS/56.0.2924.75 Mobile/14E5239e Safari/602.1')
-    driver = webdriver.Chrome(executable_path=BASE_DIR + '\\apps\\static\\chromedriver.exe',options=chrome_options)
-
-    driver.get("https://www.instagram.com/accounts/login/?next=/explore/")
-
-    time.sleep(5)
-    form=driver.find_element_by_name("username")
-    form.send_keys(name)
-
-
-    form=driver.find_element_by_name("password")
-    form.send_keys(passs)
-    form.send_keys(Keys.ENTER)
-
-    time.sleep(10)
-
-    form=driver.find_element_by_class_name("cmbtv").click()
-    time.sleep(15)
-
-    form=driver.find_element_by_xpath("//*[@id='react-root']/section/nav[2]/div/div/div[2]/div/div/div[3]").click()
-    time.sleep(10)
-
+    opt = webdriver.ChromeOptions()
+    opt.add_argument('--headless')
+    opt.add_argument('--no-sandbox')
+    opt.add_experimental_option('excludeSwitches',['enable-automation'])
+    driver = webdriver.Chrome(executable_path=cd_url,options=opt)
+    driver.get('https://web.facebook.com/')
+    # start login
     while True:
         try:
-            form=driver.find_element_by_class_name("UP43G").click()
+            driver.find_element_by_xpath('//*[@id="email"]').send_keys(name)
+            driver.find_element_by_xpath('//*[@id="pass"]').send_keys(passs)
             break
         except:
-            time.sleep(5)
-
+            time.sleep(1)
+    driver.find_element_by_xpath('//*[@id="u_0_b"]').click()
+    # end login
+    start_time = time.time()
+    # start post
+    while True:
+        try:
+            elems = driver.find_elements_by_tag_name('textarea')
+            elems[0].send_keys(post_content)
+            break
+        except:
+            time.sleep(1)
+            if (time.time() - start_time >= 25):
+                return 'Facebook credentials are not correct!'
+    while True:
+        try:
+            elems = driver.find_elements_by_tag_name('button')
+            for i in elems:
+                if i.text == 'Post':
+                    i.click()
+            break
+        except:
+            pass
+    # end post
     time.sleep(5)
-    form=driver.find_element_by_class_name("_472V_")
-    form.send_keys("L00000000")
+    driver.quit()
+    return ('Post made successfully on facebook')
 
-    form=driver.find_element_by_class_name("UP43G").click()
+def add_to_twitter(name,passs,post_content,verify):
+    cd_url = BASE_DIR + '\\apps\\static\\chromedriver.exe'
+    opt = webdriver.chrome.options.Options()
+    opt.add_argument('--headless')
+    opt.add_argument('--no-sandbox')
+    opt.add_experimental_option('excludeSwitches',['enable-automation'])
+    driver = webdriver.Chrome(executable_path=cd_url,options=opt)
+    driver.get('https://twitter.com/login')
+    # start login
+    while True:
+        try:
+            driver.find_element_by_xpath('//*[@id="react-root"]/div/div/div[2]/main/div/div/form/div/div[1]/label/div/div[2]/div/input').send_keys(name)
+            driver.find_element_by_xpath('//*[@id="react-root"]/div/div/div[2]/main/div/div/form/div/div[2]/label/div/div[2]/div/input').send_keys(passs)
+            break
+        except:
+            time.sleep(1)
+    driver.find_element_by_xpath('//*[@id="react-root"]/div/div/div[2]/main/div/div/form/div/div[3]/div/div/span/span').click()
+    # end login
+    time.sleep(5)
+    if verify:
+        driver.find_element_by_id('challenge_response').send_keys(verify)
+        driver.find_element_by_id('email_challenge_submit').click()
+        time.sleep(5)
+    if '/login/error' in driver.current_url:
+        return 'Twitter credentials are not correct'
+    if '/account/login_challenge' in driver.current_url:
+        return 'Please enter the verification code send to you by twitter'
+    # start tweet
+    while True:
+        try:
+            driver.find_element_by_xpath('//*[@id="react-root"]/div/div/div[2]/main/div/div/div/div/div/div[2]/div/div[2]/div[1]/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div/div/div/div[1]/div/div/div/div[2]/div/div/div/div').send_keys(post_content)
+            break
+        except:
+            time.sleep(1)
+    driver.find_element_by_xpath('//*[@id="react-root"]/div/div/div[2]/main/div/div/div/div/div/div[2]/div/div[2]/div[1]/div/div/div/div[2]/div[2]/div/div/div[2]/div[3]/div').click()
+    # end tweet
+    time.sleep(5)
+    driver.quit()
+    return ('Post made successfully on twitter')
+
+def add_to_insta(name,passs,post_content,image_to_post):
+    bot = instabot.Bot()
+    try:
+        bot.login(username=name,password=passs,proxy=None)
+    except:
+        return ('Instagram credentials are not correct!')
+    bot.upload_photo(image_to_post,caption=post_content)
+    return ('Post made successfully on Instagram')
+
+def post_to_fb_page(name,passs,post_content,page_name):
+    cd_url = BASE_DIR + '\\apps\\static\\chromedriver.exe'
+    opt = webdriver.ChromeOptions()
+    opt.add_argument('--headless')
+    opt.add_argument('--no-sandbox')
+    opt.add_experimental_option('excludeSwitches',['enable-automation'])
+    driver = webdriver.Chrome(executable_path=cd_url,options=opt)
+    driver.get('https://mbasic.facebook.com/'+page_name+'/')
+    time.sleep(5)
+    driver.find_element_by_xpath('//*[@id="mobile_login_bar"]/div[2]/a[2]').click()
+    while True:
+        try:
+            driver.find_element_by_xpath('//*[@id="m_login_email"]').send_keys(name)
+            driver.find_element_by_xpath('//*[@id="login_form"]/ul/li[2]/div/input').send_keys(passs)
+            break
+        except:
+            time.sleep(1)
+    driver.find_element_by_xpath('//*[@id="login_form"]/ul/li[3]/input').click()
+    while True:
+        try:
+            elems = driver.find_elements_by_tag_name('textarea')
+            elems[0].send_keys(post_content)
+            break
+        except:
+            time.sleep(1)
+    while True:
+        try:
+            driver.find_element_by_xpath('//*[@id="mbasic-composer-form"]/table/tbody/tr/td[3]/div/input').click()
+            break
+        except:
+            pass
+    time.sleep(5)
+    driver.quit()
     return

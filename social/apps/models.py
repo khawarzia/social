@@ -37,7 +37,7 @@ class Subscriber(models.Model):
     Date_Subscribed = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.email
+        return self.Email
 
 # @receiver(post_save,sender=profileModel)
 # def send_user_data_when_created_by_admin(sender, instance, **kwargs):
@@ -155,3 +155,43 @@ class insta_handle(models.Model):
             else:
                 b = b - 1
         return a
+
+class email_handle(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    username = models.CharField(max_length=100,blank=True)
+    password = models.CharField(max_length=200,blank=True)
+
+    def __str__(self):
+        return self.user.username
+
+    def givepass(self,a):
+        b = ''
+        for i in a:
+            b = b + i
+            b = b + random.choice(string.ascii_letters+string.digits)
+            b = b + random.choice(string.ascii_letters+string.digits)
+            b = b + random.choice(string.ascii_letters+string.digits)
+            b = b + random.choice(string.ascii_letters+string.digits)
+            b = b + random.choice(string.ascii_letters+string.digits)
+        self.password = b
+        self.save()
+        return self
+
+    def getpass(self):
+        a = ''
+        b = 5
+        for i in range(len(self.password)):
+            if b == 5:
+                a = a + self.password[i]
+                b = b - 1
+            elif b == 0:
+                b = 5
+            else:
+                b = b - 1
+        return a
+
+class instaimg(models.Model):
+    img = models.ImageField(verbose_name='Image for Instagram',upload_to='temp',default=None)
+
+    def __str__(self):
+        return ''

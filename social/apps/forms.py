@@ -80,3 +80,8 @@ class SubscriberForm(forms.ModelForm):
     class Meta:
         model   = Subscriber
         fields  = '__all__'
+
+class imageform(forms.ModelForm):
+    class Meta:
+        model = instaimg
+        fields = '__all__'

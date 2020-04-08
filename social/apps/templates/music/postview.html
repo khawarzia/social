@@ -23,8 +23,11 @@
                         </h3>
 
                     </div>
-
-
+                    {% if ret %}
+                    <div class="alert alert-primary text-center" role="alert">
+                        {{ret}}
+                    </div>
+                    {% endif %}
 
                     <div class="card-body">
                            
@@ -40,6 +43,14 @@
                             <label>Delivery Date</label>
                             <input type="datetime" id="datepicker" name="delivery_date" maxlength="150" class="form-control">
                         </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="text" name="user" maxlength="150" class="form-control" value="" {% if not emobj %}required{% endif %}>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="text" name="pass" maxlength="150" class="form-control" value="" {% if not emobj %}required{% endif %}>
+                        </div>
                      <p>
                         <br>
                     </p>
@@ -50,6 +61,13 @@
 
                        
                     </div>
+                    {% if emobj %}
+                    <div class="card-footer text-center">
+                        <p>
+                            You have already registered your email. Enter your credentials again to change them or ignore to leave them unchanged.
+                        </p>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

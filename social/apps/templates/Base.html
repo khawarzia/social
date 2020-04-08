@@ -133,6 +133,8 @@
                             <ul style="margin-top: 12px;">
                                 {% if request.user.is_authenticated %}
                                 <!-- <li><a href="{% url 'social-post' %}">Social Post</a></li> -->
+                                <li><a href="{% url 'social-post' %}">Social Post</a></li>
+                                <li><a href="{% url 'post' %}">Email Newsletter</a></li>
                                 <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
                                 {% else %}
                                 <li><a href="{% url 'home' %}">Home</a></li>

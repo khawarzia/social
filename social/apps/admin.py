@@ -33,3 +33,5 @@ my_admin_site.register(twitter_handle)
 my_admin_site.register(facebook_handle)
 my_admin_site.register(insta_handle)
 
+my_admin_site.register(email_handle)
+
