@@ -43,28 +43,24 @@
                             <label>Delivery Date</label>
                             <input type="datetime" id="datepicker" name="delivery_date" maxlength="150" class="form-control">
                         </div>
-                        <div class="form-group">
-                            <label>Email</label>
-                            <input type="text" name="user" maxlength="150" class="form-control" value="" {% if not emobj %}required{% endif %}>
-                        </div>
-                        <div class="form-group">
-                            <label>Password</label>
-                            <input type="text" name="pass" maxlength="150" class="form-control" value="" {% if not emobj %}required{% endif %}>
-                        </div>
-                     <p>
-                        <br>
-                    </p>
                     <p>
                         <br>
+                        {% if emobj %}
                             <input type="submit" class="btn btn-warning" value="Save">
-    
+                        {% endif %}
 
                        
                     </div>
                     {% if emobj %}
                     <div class="card-footer text-center">
                         <p>
-                            You have already registered your email. Enter your credentials again to change them or ignore to leave them unchanged.
+                            You have already registered your email. Click <a href="{% url 'email-change' %}">here</a> to change your credentials.
+                        </p>
+                    </div>
+                    {% else %}
+                    <div class="card-footer text-center">
+                        <p>
+                            Please register your email <a href="{% url 'email-login' %}">here</a> in order to send the mail.
                         </p>
                     </div>
                     {% endif %}

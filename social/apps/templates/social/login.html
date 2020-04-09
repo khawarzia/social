@@ -13,7 +13,7 @@
 <center>
             <div class="card" style="width: 25rem;" >
                     <div class="card-header btn-warning">
-                            Social Credentials
+                            {% if em %}Email{% else %}Social{% endif %} Credentials
                     </div>
                     <div class="card-body">
 
@@ -21,12 +21,12 @@
                             <form method="POST">
                                 {% csrf_token %}
                                 <div class="form-group">
-                                    <label for="exampleUserName1" >Social UserName</label>
+                                    <label for="exampleUserName1" >{% if em %}Email{% else %}Social UserName{% endif %}</label>
                                     <input type="text" name="username" required id="id_username"  class="form-control" 
-                                     placeholder="Enter User" {% if name %} value="{{name}}" {% endif %}>
+                                     placeholder="Enter {% if em %}Email{% else %}User{% endif %}" {% if name %} value="{{name}}" {% endif %}>
                                 </div >
                                 <div class="form-group">
-                                <label class = "exampleInputPassword1">Social Password</label>
+                                <label class = "exampleInputPassword1">{% if not em %}Social{% endif %} Password</label>
                                 <input type="password" name="password" required id="id_password"  class="form-control"  placeholder="Enter Password">
                                 <div>
 

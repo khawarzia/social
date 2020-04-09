@@ -45,4 +45,6 @@ urlpatterns = [
     path('twitter-change',views.twitter_change,name='twitter-change'),
     path('insta-login',views.insta_login,name='insta-login'),
     path('insta-change',views.insta_change,name='insta-change'),
+    path('email-login',views.email_login,name='email-login'),
+    path('email-change',views.email_change,name='email-change'),
 ]

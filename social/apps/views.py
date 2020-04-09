@@ -156,6 +156,21 @@ def insta_login(request):
         return redirect('/social-post')
     return render(request,template,context)
 
+def email_login(request):
+    template = 'social/login.html'
+    context = {}
+    if request.method == 'POST':
+        a = request.POST['username']
+        b = request.POST['password']
+        obj = email_handle()
+        obj.user = request.user
+        obj.username = a
+        obj.save()
+        obj.givepass(b)
+        return redirect('/post')
+    context['em'] = True
+    return render(request,template,context)
+
 def facebook_change(request):
     template = 'social/login.html'
     context = {'name':facebook_handle.objects.get(user=request.user).username}
@@ -194,6 +209,21 @@ def insta_change(request):
         obj.givepass(b)
         return redirect('/social-post')
     return render(request,template,context)
+
+def email_change(request):
+    template = 'social/login.html'
+    context = {'name':email_handle.objects.get(user=request.user).username}
+    if request.method == 'POST':
+        a = request.POST['username']
+        b = request.POST['password']
+        obj = email_handle.objects.get(user=request.user)
+        obj.username = a
+        obj.save()
+        obj.givepass(b)
+        return redirect('/post')
+    context['em'] = True
+    return render(request,template,context)
+
 
 def login_user(request):
     if request.method!= 'POST':
@@ -380,22 +410,7 @@ def PostView(request):
             emails=[]
             for i in subs:
                 emails.append(i.Email)
-            if request.POST['user'] and request.POST['pass']:
-                try:
-                    obj = email_handle.objects.get(user=request.user)
-                    obj.username = request.POST['user']
-                    obj.save()
-                    obj.givepass(request.POST['pass'])
-                    obj.save()
-                except:
-                    obj = email_handle()
-                    obj.user = request.user
-                    obj.username = request.POST['user']
-                    obj.save()
-                    obj.givepass(request.POST['pass'])
-                    obj.save()
-            else:
-                obj = email_handle.objects.get(user=request.user)
+            obj = email_handle.objects.get(user=request.user)
             con = get_connection(host='smtp.gmail.com',port=587,username=obj.username,password=obj.getpass(),use_tls=True)
             email = EmailMessage(mail_subject, message, to=[emails],from_email=obj.username, connection=con)
             email.send()
@@ -468,7 +483,7 @@ def SubscriberView(request):
 def add_to_fb(name,passs,post_content):
     cd_url = BASE_DIR + '\\apps\\static\\chromedriver.exe'
     opt = webdriver.ChromeOptions()
-    opt.add_argument('--headless')
+    #opt.add_argument('--headless')
     opt.add_argument('--no-sandbox')
     opt.add_experimental_option('excludeSwitches',['enable-automation'])
     driver = webdriver.Chrome(executable_path=cd_url,options=opt)
@@ -483,7 +498,9 @@ def add_to_fb(name,passs,post_content):
             time.sleep(1)
     driver.find_element_by_xpath('//*[@id="u_0_b"]').click()
     # end login
-    start_time = time.time()
+    time.sleep(10)
+    if '.com/login/' in driver.current_url:
+        return 'Facebook credential are not correct!'
     # start post
     while True:
         try:
@@ -492,8 +509,6 @@ def add_to_fb(name,passs,post_content):
             break
         except:
             time.sleep(1)
-            if (time.time() - start_time >= 25):
-                return 'Facebook credentials are not correct!'
     while True:
         try:
             elems = driver.find_elements_by_tag_name('button')
@@ -504,7 +519,7 @@ def add_to_fb(name,passs,post_content):
         except:
             pass
     # end post
-    time.sleep(5)
+    time.sleep(10)
     driver.quit()
     return ('Post made successfully on facebook')
 
@@ -527,7 +542,7 @@ def add_to_twitter(name,passs,post_content,verify):
     driver.find_element_by_xpath('//*[@id="react-root"]/div/div/div[2]/main/div/div/form/div/div[3]/div/div/span/span').click()
     # end login
     time.sleep(5)
-    if verify:
+    if verify and verify != ' ':
         driver.find_element_by_id('challenge_response').send_keys(verify)
         driver.find_element_by_id('email_challenge_submit').click()
         time.sleep(5)
