@@ -481,9 +481,9 @@ def SubscriberView(request):
 
 
 def add_to_fb(name,passs,post_content):
-    cd_url = BASE_DIR + '\\apps\\static\\chromedriver.exe'
+    cd_url = BASE_DIR + '/usr/bin/chromedriver'
     opt = webdriver.ChromeOptions()
-    #opt.add_argument('--headless')
+    opt.add_argument('--headless')
     opt.add_argument('--no-sandbox')
     opt.add_experimental_option('excludeSwitches',['enable-automation'])
     driver = webdriver.Chrome(executable_path=cd_url,options=opt)
@@ -524,7 +524,7 @@ def add_to_fb(name,passs,post_content):
     return ('Post made successfully on facebook')
 
 def add_to_twitter(name,passs,post_content,verify):
-    cd_url = BASE_DIR + '\\apps\\static\\chromedriver.exe'
+    cd_url = BASE_DIR + '/usr/bin/chromedriver'
     opt = webdriver.chrome.options.Options()
     opt.add_argument('--headless')
     opt.add_argument('--no-sandbox')
@@ -573,7 +573,7 @@ def add_to_insta(name,passs,post_content,image_to_post):
     return ('Post made successfully on Instagram')
 
 def post_to_fb_page(name,passs,post_content,page_name):
-    cd_url = BASE_DIR + '\\apps\\static\\chromedriver.exe'
+    cd_url = BASE_DIR + '/usr/bin/chromedriver'
     opt = webdriver.ChromeOptions()
     opt.add_argument('--headless')
     opt.add_argument('--no-sandbox')
