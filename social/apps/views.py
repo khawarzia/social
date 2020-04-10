@@ -481,12 +481,12 @@ def SubscriberView(request):
 
 
 def add_to_fb(name,passs,post_content):
-    cd_url = '/usr/bin/chromedriver'
+    #cd_url = '/usr/bin/chromedriver'
     opt = webdriver.ChromeOptions()
     opt.add_argument('--headless')
     opt.add_argument('--no-sandbox')
     opt.add_experimental_option('excludeSwitches',['enable-automation'])
-    driver = webdriver.Chrome(executable_path=cd_url,options=opt)
+    driver = webdriver.Chrome(options=opt)
     driver.get('https://web.facebook.com/')
     # start login
     while True:
@@ -524,12 +524,12 @@ def add_to_fb(name,passs,post_content):
     return ('Post made successfully on facebook')
 
 def add_to_twitter(name,passs,post_content,verify):
-    cd_url = '/usr/bin/chromedriver'
+    #cd_url = '/usr/bin/chromedriver'
     opt = webdriver.chrome.options.Options()
     opt.add_argument('--headless')
     opt.add_argument('--no-sandbox')
     opt.add_experimental_option('excludeSwitches',['enable-automation'])
-    driver = webdriver.Chrome(executable_path=cd_url,options=opt)
+    driver = webdriver.Chrome(options=opt)
     driver.get('https://twitter.com/login')
     # start login
     while True:
@@ -573,12 +573,12 @@ def add_to_insta(name,passs,post_content,image_to_post):
     return ('Post made successfully on Instagram')
 
 def post_to_fb_page(name,passs,post_content,page_name):
-    cd_url = '/usr/bin/chromedriver'
+    #cd_url = '/usr/bin/chromedriver'
     opt = webdriver.ChromeOptions()
     opt.add_argument('--headless')
     opt.add_argument('--no-sandbox')
     opt.add_experimental_option('excludeSwitches',['enable-automation'])
-    driver = webdriver.Chrome(executable_path=cd_url,options=opt)
+    driver = webdriver.Chrome(options=opt)
     driver.get('https://mbasic.facebook.com/'+page_name+'/')
     time.sleep(5)
     driver.find_element_by_xpath('//*[@id="mobile_login_bar"]/div[2]/a[2]').click()
