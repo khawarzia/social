@@ -486,7 +486,6 @@ def add_to_fb(name,passs,post_content):
     opt.add_argument('--headless')
     opt.add_argument('--no-sandbox')
     opt.add_experimental_option('excludeSwitches',['enable-automation'])
-    opt.add_experimental_option('prefs', {'intl.accept_languages': 'en,en_US'})
     driver = webdriver.Chrome(options=opt)
     driver.get('https://web.facebook.com/')
     # start login
@@ -497,6 +496,7 @@ def add_to_fb(name,passs,post_content):
             break
         except:
             time.sleep(1)
+    time.sleep(2)
     driver.find_element_by_xpath('//*[@id="u_0_b"]').click()
     # end login
     time.sleep(10)
@@ -512,10 +512,9 @@ def add_to_fb(name,passs,post_content):
             time.sleep(1)
     while True:
         try:
-            elems = driver.find_elements_by_tag_name('button')
-            for i in elems:
-                if i.text == 'Post':
-                    i.click()
+            elem = driver.find_element_by_xpath('//*[@id="u_0_1d"]/div[3]/div[1]/div/button')
+            time.sleep(5)
+            elem.click()
             break
         except:
             pass
@@ -530,7 +529,6 @@ def add_to_twitter(name,passs,post_content,verify):
     opt.add_argument('--headless')
     opt.add_argument('--no-sandbox')
     opt.add_experimental_option('excludeSwitches',['enable-automation'])
-    opt.add_experimental_option('prefs', {'intl.accept_languages': 'en,en_US'})
     driver = webdriver.Chrome(options=opt)
     driver.get('https://twitter.com/login')
     # start login
@@ -541,13 +539,17 @@ def add_to_twitter(name,passs,post_content,verify):
             break
         except:
             time.sleep(1)
+    time.sleep(2)
     driver.find_element_by_xpath('//*[@id="react-root"]/div/div/div[2]/main/div/div/form/div/div[3]/div/div/span/span').click()
     # end login
     time.sleep(5)
-    if verify and verify != ' ':
-        driver.find_element_by_id('challenge_response').send_keys(verify)
-        driver.find_element_by_id('email_challenge_submit').click()
-        time.sleep(5)
+    try:
+        if verify and verify != ' ':
+            driver.find_element_by_id('challenge_response').send_keys(verify)
+            driver.find_element_by_id('email_challenge_submit').click()
+            time.sleep(5)
+    except:
+        pass
     if '/login/error' in driver.current_url:
         return 'Twitter credentials are not correct'
     if '/account/login_challenge' in driver.current_url:
@@ -580,7 +582,6 @@ def post_to_fb_page(name,passs,post_content,page_name):
     opt.add_argument('--headless')
     opt.add_argument('--no-sandbox')
     opt.add_experimental_option('excludeSwitches',['enable-automation'])
-    opt.add_experimental_option('prefs', {'intl.accept_languages': 'en,en_US'})
     driver = webdriver.Chrome(options=opt)
     driver.get('https://mbasic.facebook.com/'+page_name+'/')
     time.sleep(5)
