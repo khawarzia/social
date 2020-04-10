@@ -98,7 +98,7 @@ def social_post(request):
                 form.save()
                 obj = instaimg.objects.last()
                 k = obj.img.name
-                k = strip6(BASE_DIR) + '\\media\\temp\\'+ k.split('/')[1]
+                k = strip6(BASE_DIR) + '/media/temp/'+ k.split('/')[1]
                 context['ret3'] = add_to_insta(inobj.username,inobj.getpass(),a,k)
                 obj.delete()
                 try:
