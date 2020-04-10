@@ -569,11 +569,8 @@ def add_to_insta(name,passs,post_content,image_to_post):
         bot.login(username=name,password=passs,proxy=None)
     except:
         pass
-    try:
-        bot.upload_photo(image_to_post,caption=post_content)
-    except:
-        return ('Posting on Instagram was unsuccesful please try again or check your credentials')
-    return ('Post made successfully on Instagram')
+    bot.upload_photo(image_to_post,caption=post_content)
+    return ('Post made on Instagram')
 
 def post_to_fb_page(name,passs,post_content,page_name):
     #cd_url = '/usr/bin/chromedriver'
