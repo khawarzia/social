@@ -86,7 +86,7 @@ def social_post(request):
         if b == 'on' and fbobj != None:
             context['ret1'] = add_to_fb(fbobj.username,fbobj.getpass(),a)
             if request.POST['page_url'] and context['ret1'] == 'Post made successfully on facebook':
-                post_to_fb_page(fbobj.username,fbobj.getpass(),a,request['page_url'])
+                post_to_fb_page(fbobj.username,fbobj.getpass(),a,request.POST['page_url'])
         if c == 'on' and twobj != None:
             context['ret2'] = add_to_twitter(twobj.username,twobj.getpass(),a,request.POST['verify'])
             if context['ret2'] == 'Please enter the verification code send to you by twitter':
