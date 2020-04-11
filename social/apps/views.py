@@ -576,7 +576,7 @@ def add_to_twitter(name,passs,post_content,verify):
     if checkingthis:
         driver.get('https://twitter.com/settings/account/login_verification')
         time.sleep(5)
-        elemens = driver.find_elements_by_tagname('input')
+        elemens = driver.find_elements_by_tag_name('input')
         time.sleep(2)
         elemens[0].click()
         time.sleep(2)
