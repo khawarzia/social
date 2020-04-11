@@ -103,11 +103,6 @@
                         {% if fbobj %}
                         <input name="page_url" class="form-control" type="text" placeholder="Enter page username on which you want to post (Optional)" value=""><br>
                         {% endif %}
-                        {% if verifycheck %}
-                        <input name="verify" class="from-control" type="text" placeholder="Verification sent by twitter to your email address" required><br>
-                        {% else %}
-                        <input type="hidden" name="verify" value="">
-                        {% endif %}
                         {{form.as_p}}
                            <div class="row"> 
                             <div class="col-sm-4">

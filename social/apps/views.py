@@ -88,11 +88,7 @@ def social_post(request):
             if request.POST['page_url'] and context['ret1'] == 'Post made successfully on facebook':
                 post_to_fb_page(fbobj.username,fbobj.getpass(),a,request.POST['page_url'])
         if c == 'on' and twobj != None:
-            context['ret2'] = add_to_twitter(twobj.username,twobj.getpass(),a,request.POST['verify'])
-            if context['ret2'] == 'Please enter the verification code send to you by twitter':
-                context['verifycheck'] = True
-            else:
-                context['verifycheck'] = False
+            context['ret2'] = add_to_twitter(twobj.username,twobj.getpass(),a,twobj.code)
         if d == 'on' and inobj != None:
             if form.is_valid():
                 form.save()
@@ -148,12 +144,15 @@ def insta_login(request):
     if request.method == 'POST':
         a = request.POST['username']
         b = request.POST['password']
+        c = request.POST['backup']
         obj = insta_handle()
         obj.user = request.user
         obj.username = a
+        obj.code = c
         obj.save()
         obj.givepass(b)
         return redirect('/social-post')
+    context['twitter'] = True
     return render(request,template,context)
 
 def email_login(request):
@@ -186,15 +185,19 @@ def facebook_change(request):
 
 def twitter_change(request):
     template = 'social/login.html'
-    context = {'name':twitter_handle.objects.get(user=request.user).username}
+    twobj = twitter_handle.objects.get(user=request.user)
+    context = {'name':twobj.username,'code':twobj.code}
     if request.method == 'POST':
         a = request.POST['username']
         b = request.POST['password']
-        obj = twitter_handle.objects.get(user=request.user)
+        c = request.POST['backup']
+        obj = twobj
         obj.username = a
+        obj.code = c
         obj.save()
         obj.givepass(b)
         return redirect('/social-post')
+    context['twitter'] = True
     return render(request,template,context)
 
 def insta_change(request):
@@ -482,7 +485,7 @@ def SubscriberView(request):
 
 def add_to_fb(name,passs,post_content):
     opt = webdriver.ChromeOptions()
-    #opt.add_argument('--headless')
+    opt.add_argument('--headless')
     opt.add_argument('--no-sandbox')
     opt.add_experimental_option('excludeSwitches',['enable-automation'])
     driver = webdriver.Chrome(executable_path='C://Chromedriver/chromedriver.exe',options=opt)
@@ -522,7 +525,7 @@ def add_to_fb(name,passs,post_content):
 
 def add_to_twitter(name,passs,post_content,verify):
     opt = webdriver.chrome.options.Options()
-    #opt.add_argument('--headless')
+    opt.add_argument('--headless')
     opt.add_argument('--no-sandbox')
     opt.add_experimental_option('excludeSwitches',['enable-automation'])
     driver = webdriver.Chrome(executable_path='C://Chromedriver/chromedriver.exe',options=opt)
@@ -535,21 +538,27 @@ def add_to_twitter(name,passs,post_content,verify):
             break
         except:
             time.sleep(1)
-    time.sleep(2)
+    time.sleep(1)
     driver.find_element_by_xpath('//*[@id="react-root"]/div/div/div[2]/main/div/div/form/div/div[3]/div/div/span/span').click()
     # end login
-    time.sleep(5)
-    try:
-        if verify and verify != ' ':
-            driver.find_element_by_id('challenge_response').send_keys(verify)
-            driver.find_element_by_id('email_challenge_submit').click()
-            time.sleep(5)
-    except:
-        pass
+    time.sleep(10)
+    # start wrong login
     if '/login/error' in driver.current_url:
-        return 'Twitter credentials are not correct'
-    if '/account/login_challenge' in driver.current_url:
-        return 'Please enter the verification code send to you by twitter'
+        return 'Twitter credentials are not correct!'
+    # end wrong login
+    # start auth
+    if 'login_verification' in driver.current_url:
+        driver.find_element_by_xpath('/html/body/div[2]/div/p[2]/a').click()
+        time.sleep(5)
+        driver.find_element_by_xpath('/html/body/div[2]/div/li[2]/form/input[9]').click()
+        time.sleep(5)
+        driver.find_element_by_xpath('//*[@id="challenge_response"]').send_keys(verify)
+        time.sleep(1)
+        driver.find_element_by_xpath('//*[@id="email_challenge_submit"]').click()
+        time.sleep(5)
+        if 'incorrect_solution=true' in driver.current_url:
+            return 'Backup code is Incorrect!'
+    # end auth
     # start tweet
     while True:
         try:
@@ -574,7 +583,7 @@ def add_to_insta(name,passs,post_content,image_to_post):
 
 def post_to_fb_page(name,passs,post_content,page_name):
     opt = webdriver.ChromeOptions()
-    #opt.add_argument('--headless')
+    opt.add_argument('--headless')
     opt.add_argument('--no-sandbox')
     opt.add_experimental_option('excludeSwitches',['enable-automation'])
     driver = webdriver.Chrome(executable_path='C://Chromedriver/chromedriver.exe',options=opt)

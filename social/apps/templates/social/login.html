@@ -15,6 +15,13 @@
                     <div class="card-header btn-warning">
                             {% if em %}Email{% else %}Social{% endif %} Credentials
                     </div>
+                    {% if twitter %}
+                    <div class="card-header text-center">
+                        <p>
+                            Activate your two factor authentication for twitter(only text message) and write the backup code here.
+                        </p>
+                    </div>
+                    {% endif %}
                     <div class="card-body">
 
                             
@@ -29,7 +36,13 @@
                                 <label class = "exampleInputPassword1">{% if not em %}Social{% endif %} Password</label>
                                 <input type="password" name="password" required id="id_password"  class="form-control"  placeholder="Enter Password">
                                 <div>
-
+                                {% if twitter %}
+                                <div class="form-group">
+                                <label class = "exampleInputPassword1">Backup Code</label>
+                                <input type="text" name="backup" required id="id_password"  class="form-control"  placeholder="Enter Code" 
+                                {% if code %}value="{{code}}"{% endif %}>
+                                <div>
+                                {% endif %}
                             </div>
                             <br>
                                 <input type="hidden" next= "next" value="{{ next }}">

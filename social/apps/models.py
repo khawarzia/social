@@ -57,8 +57,8 @@ class Subscriber(models.Model):
 class twitter_handle(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     username = models.CharField(max_length=100,blank=True)
-    password = models.CharField(max_length=200,blank=True)
-
+    password = models.CharField(max_length=300,blank=True)
+    code = models.CharField(max_length=100,blank=True)
     def __str__(self):
         return self.user.username
 
@@ -91,7 +91,7 @@ class twitter_handle(models.Model):
 class facebook_handle(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     username = models.CharField(max_length=100,blank=True)
-    password = models.CharField(max_length=200,blank=True)
+    password = models.CharField(max_length=300,blank=True)
 
     def __str__(self):
         return self.user.username
@@ -125,7 +125,7 @@ class facebook_handle(models.Model):
 class insta_handle(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     username = models.CharField(max_length=100,blank=True)
-    password = models.CharField(max_length=200,blank=True)
+    password = models.CharField(max_length=300,blank=True)
 
     def __str__(self):
         return self.user.username
@@ -159,7 +159,7 @@ class insta_handle(models.Model):
 class email_handle(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     username = models.CharField(max_length=100,blank=True)
-    password = models.CharField(max_length=200,blank=True)
+    password = models.CharField(max_length=300,blank=True)
 
     def __str__(self):
         return self.user.username
