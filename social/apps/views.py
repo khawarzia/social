@@ -556,8 +556,11 @@ def add_to_twitter(name,passs,post_content,verify):
         time.sleep(1)
         driver.find_element_by_xpath('//*[@id="email_challenge_submit"]').click()
         time.sleep(5)
+        checkingthis = True
         if 'incorrect_solution=true' in driver.current_url:
             return 'Backup code is Incorrect!'
+    else:
+        checkingthis = False
     # end auth
     # start tweet
     while True:
@@ -569,6 +572,23 @@ def add_to_twitter(name,passs,post_content,verify):
     driver.find_element_by_xpath('//*[@id="react-root"]/div/div/div[2]/main/div/div/div/div/div/div[2]/div/div[2]/div[1]/div/div/div/div[2]/div[2]/div/div/div[2]/div[3]/div').click()
     # end tweet
     time.sleep(5)
+    # start turn off 2-factor auth
+    if checkingthis:
+        driver.find_element_by_xpath('//*[@id="react-root"]/div/div/div[2]/header/div/div/div/div[1]/div[2]/nav/div/div/div/svg').click()
+        time.sleep(2)
+        driver.find_element_by_xpath('//*[@id="react-root"]/div/div/div[1]/div[2]/div/div[2]/div[3]/div/div/div/div[6]/a/div/div/span').click()
+        time.sleep(2)
+        driver.find_element_by_xpath('//*[@id="react-root"]/div/div/div[2]/main/div/div/div/section[2]/div[2]/div/a[5]/div/div/div').click()
+        time.sleep(2)
+        driver.find_element_by_xpath('//*[@id="react-root"]/div/div/div[2]/main/div/div/div/section[2]/div[2]/div/a/div/div/div/span').click()
+        time.sleep(2)
+        driver.find_element_by_xpath('//*[@id="react-root"]/div/div/div[2]/main/div/div/div/section[2]/div[2]/div[2]/label/div[2]/input').click()
+        time.sleep(2)
+        driver.find_element_by_xpath('//*[@id="react-root"]/div/div/div[1]/div[2]/div/div/div/div[2]/div[2]/div[3]/div[2]/div/span/span').click()
+        time.sleep(2)
+        driver.find_element_by_xpath('//*[@id="react-root"]/div/div/div[1]/div[2]/div/div/div/div[2]/div[2]/div[3]/div[2]/div/span/span').click()
+        time.sleep(2)
+    # end turn off 2-factor auth
     driver.quit()
     return ('Post made successfully on twitter')
 
