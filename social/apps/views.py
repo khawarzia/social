@@ -589,12 +589,16 @@ def post_to_fb_page(name,passs,post_content,page_name):
         except:
             time.sleep(1)
     driver.find_element_by_xpath('//*[@id="login_form"]/ul/li[3]/input').click()
+    count = 0
     while True:
         try:
+            if count > 25:
+                return
             elems = driver.find_elements_by_tag_name('textarea')
             elems[0].send_keys(post_content)
             break
         except:
+            count = count + 1
             time.sleep(1)
     while True:
         try:
