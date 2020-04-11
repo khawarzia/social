@@ -576,7 +576,9 @@ def add_to_twitter(name,passs,post_content,verify):
     if checkingthis:
         driver.get('https://twitter.com/settings/account/login_verification')
         time.sleep(5)
-        driver.find_element_by_xpath('//*[@id="react-root"]/div/div/div[2]/main/div/div/div/section[2]/div[2]/div[2]/label/div[2]/input').click()
+        elemens = driver.find_elements_by_tagname('input')
+        time.sleep(2)
+        elemens[0].click()
         time.sleep(2)
         driver.find_element_by_xpath('//*[@id="react-root"]/div/div/div[1]/div[2]/div/div/div/div[2]/div[2]/div[3]/div[2]/div/span/span').click()
         time.sleep(2)
