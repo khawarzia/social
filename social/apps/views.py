@@ -522,7 +522,7 @@ def add_to_fb(name,passs,post_content):
 
 def add_to_twitter(name,passs,post_content,verify):
     opt = webdriver.chrome.options.Options()
-    #opt.add_argument('--headless')
+    opt.add_argument('--headless')
     opt.add_argument('--no-sandbox')
     opt.add_experimental_option('excludeSwitches',['enable-automation'])
     driver = webdriver.Chrome(options=opt)
