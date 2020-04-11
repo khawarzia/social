@@ -1,0 +1,180 @@
+{% extends 'Base.html' %}
+{% load static %}
+{% block title %}Social Post{% endblock %}
+{% block content %}
+<style>
+    .fa {
+      padding: 14px;
+      font-size: 30px;
+      width: 50px;
+      text-align: center;
+      text-decoration: none;
+      margin: 5px 2px;
+    }
+    
+    .fa:hover {
+        opacity: 0.7;
+    }
+    
+    
+    body { padding: 20px 40px; }
+    pre { color: crimson; }
+    .hide { display: none; }
+    .fa-exclamation-triangle { color: goldenrod; }
+    
+    input[type="checkbox"] + .fa,
+    input[type="checkbox"] + label > .fa,
+    input[type="radio"] + .fa,
+    input[type="radio"] + label > .fa { cursor: pointer; }
+    
+    /* Unchecked */
+    input[type="checkbox"] + .fa-check-circle:before,
+    input[type="checkbox"] + label > .fa-check-circle:before,
+    input[type="radio"] + .fa-check-circle:before,
+    input[type="radio"] + label > .fa-check-circle:before { content: "\f111"; } /* .fa-circle */
+    input[type="checkbox"] + .fa-dot-circle-o:before,
+    input[type="checkbox"] + .fa-check-circle-o:before,
+    input[type="checkbox"] + label > .fa-dot-circle-o:before,
+    input[type="checkbox"] + label > .fa-check-circle-o:before,
+    input[type="radio"] + .fa-dot-circle-o:before,
+    input[type="radio"] + label > .fa-dot-circle-o:before,
+    input[type="radio"] + .fa-check-circle-o:before,
+    input[type="radio"] + label > .fa-check-circle-o:before { content: "\f10c"; } /* .fa-circle-o */
+    input[type="radio"] + .fa-circle:before,
+    input[type="radio"] + label > .fa-circle:before { content: "\f1db"; } /* .fa-circle-thin */
+    input[type="checkbox"] + .fa-check:before,
+    input[type="checkbox"] + .fa-check-square-o:before,
+    input[type="checkbox"] + label > .fa-check:before,
+    input[type="checkbox"] + label > .fa-check-square-o:before { content: "\f096"; } /* .fa-square-o */
+    input[type="checkbox"] + .fa-check-square:before,
+    input[type="checkbox"] + label > .fa-check-square:before { content: "\f0c8"; } /* .fa-square */
+    
+    /* Checked */
+    input[type="checkbox"]:checked + .fa-check:before,
+    input[type="checkbox"]:checked + label > .fa-check:before { content: "\f00c"; }
+    input[type="checkbox"]:checked + .fa-check-circle:before,
+    input[type="checkbox"]:checked + label > .fa-check-circle:before,
+    input[type="radio"]:checked + .fa-check-circle:before,
+    input[type="radio"]:checked + label > .fa-check-circle:before { content: "\f058"; }
+    input[type="checkbox"]:checked + .fa-check-circle-o:before,
+    input[type="checkbox"]:checked + label > .fa-check-circle-o:before,
+    input[type="radio"]:checked + .fa-check-circle-o:before,
+    input[type="radio"]:checked + label > .fa-check-circle-o:before { content: "\f05d"; }
+    input[type="checkbox"]:checked + .fa-check-square:before,
+    input[type="checkbox"]:checked + label > .fa-check-square:before { content: "\f14a"; }
+    input[type="checkbox"]:checked + .fa-check-square-o:before,
+    input[type="checkbox"]:checked + label > .fa-check-square-o:before { content: "\f046"; }
+    input[type="radio"]:checked + .fa-circle:before,
+    input[type="radio"]:checked + label > .fa-circle:before { content: "\f111"; }
+    input[type="checkbox"]:checked + .fa-dot-circle-o:before,
+    input[type="checkbox"]:checked + label > .fa-dot-circle-o:before,
+    input[type="radio"]:checked + .fa-dot-circle-o:before,
+    input[type="radio"]:checked + label > .fa-dot-circle-o:before { content: "\f192"; }
+    
+    </style>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-sm-6">
+            <div class="card text-center">
+                <div class="card-header btn-warning">
+                    <strong>
+                        Make a Post
+                    </strong>
+                </div>
+                <div class="card-body">
+                    {% if check321 %}
+                    {% if ret1 %}
+                    <div class="alert alert-primary" role="alert">
+                        {{ret1}}
+                    </div>
+                    {% endif %}
+                    {% if ret2 %}
+                    <div class="alert alert-primary" role="alert">
+                        {{ret2}}
+                    </div>
+                    {% endif %}
+                    {% if ret3 %}
+                    <div class="alert alert-primary" role="alert">
+                        {{ret3}}
+                    </div>
+                    {% endif %}
+                    <form method="POST" enctype="multipart/form-data">{% csrf_token %}
+                        <input name="post-content" class="form-control" type="text" placeholder="Enter text for the post" required><br>
+                        {% if fbobj %}
+                        <input name="page_url" class="form-control" type="text" placeholder="Enter page username on which you want to post (Optional)" value=""><br>
+                        {% endif %}
+                        {% if verifycheck %}
+                        <input name="verify" class="from-control" type="text" placeholder="Verification sent by twitter to your email address" required><br>
+                        {% else %}
+                        <input type="hidden" name="verify" value="">
+                        {% endif %}
+                        {{form.as_p}}
+                           <div class="row"> 
+                            <div class="col-sm-4">
+                                {% if fbobj %}
+                                <label>
+                                    <input type="checkbox" name="facebook" class="hide"/>
+                                    <i class="fa fa-fw fa-check-circle-o"></i>&nbsp;<span class="fa fa-facebook"></span>
+                                  </label>
+                                {% endif %}
+                            </div>
+                            <div class="col-sm-4">
+
+                                {% if twobj %}
+                                <label>
+                                    <input type="checkbox" name="twitter" class="hide"/>
+                                    <i class="fa fa-fw fa-check-circle-o"></i>&nbsp;<span class="fa fa-twitter"></span>
+                                  </label>
+                                {% endif %}
+                            </div>
+
+                                {% if inobj %}
+                                <div class="col-sm-4">
+                                    <label>
+                                        <input type="checkbox" name="instagram" class="hide"/>
+                                        <i class="fa fa-fw fa-check-circle-o"></i>&nbsp;<span class="fa fa-instagram"></span>
+                                      </label>
+                                {% endif %}
+                            </div>
+
+                        </div>
+                        </div>
+                        <br>
+                        <button class="btn btn-warning btn-alert"  type="submit">
+                            Post
+                        </button>
+                        <br>
+                    </form>
+                    {% else %}
+                    <p>Please enter your credentials before making a post.</p>
+                    {% endif %}
+                </div>
+                <div class="card-footer">
+                    {% if fbobj %}
+                        <p style="color: blue;">You have already added facebook login. Click <a href="{% url 'facebook-change' %}">here</a> to change your credentials.</p>
+                    {% else %}
+                        <p style="color: red;">Please <a href="{% url 'facebook-login' %}">enter</a> your facbook login to post on facebook.</p>
+                    {% endif %}
+                    {% if twobj %}
+                        <p style="color: blue;">You have already added twitter login. Click <a href="{% url 'twitter-change' %}">here</a> to change your credentials.</p>
+                    {% else %}
+                        <p style="color: red;">Please <a href="{% url 'twitter-login' %}">enter</a> your twitter login to post on twitter.</p>
+                    {% endif %}
+                    {% if inobj %}
+                        <p style="color: blue;">You have already added instagram login. Click <a href="{% url 'insta-change' %}">here</a> to change your credentials.</p>
+                    {% else %}
+                        <p style="color: red;">Please <a href="{% url 'insta-login' %}">enter</a> your instagram login to post on instagram.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    setTimeout(function (){
+        document.getElementById('id_img').required = false;
+    },1000);
+</script>
+
+{% endblock %}

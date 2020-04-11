@@ -1,0 +1,45 @@
+{% extends 'Base.html' %}
+
+<title>{% block title %}  {{posts.title}}{% endblock %}</title>
+
+{% block content %}
+<div class="container">
+
+    <center>
+   
+
+        <div class="card" style=" width: auto;">
+            <div class="shadow p-3 bg-white rounded">
+
+                <div class="card-header text-center bg-transparent border-0">
+                    <h3>
+                        {{posts.title}}
+                    </h3>
+
+                </div>
+                <div class="card-body">
+                    <p><strong> Compaign Data</strong> </p>
+                    <p><strong> Message:</strong> {{posts.message}}</p>
+                    <p><strong> Created at:</strong> {{posts.created_on}}</p> <br>
+             
+
+
+                </div>
+            </div>
+        </div><br>
+    </center>
+<h5>Social Share</h5>
+    <!-- AddToAny BEGIN -->
+<div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+    <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+    <a class="a2a_button_facebook"></a>
+    <a class="a2a_button_twitter"></a>
+    <a class="a2a_button_email"></a>
+    <a class="a2a_button_sms"></a>
+    </div>
+    <script async src="https://static.addtoany.com/menu/page.js"></script>
+    <!-- AddToAny END -->
+</div>
+
+
+{% endblock %}

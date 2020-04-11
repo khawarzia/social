@@ -1,0 +1,203 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}Compaign{% endblock %}</title>
+    <link rel="shortcut icon" href="{% static 'music/core-img/alum.png' type='image/x-icon' %}">
+    <link rel="stylesheet" href="{% static 'music/css/style1.css' %}">
+
+    <style>
+        .dot {
+          height: 10px;
+          width: 10px;
+          background-color: #bbb;
+          border-radius: 50%;
+          display: inline-block;
+        }
+        a{
+          color:gray;
+        }
+       
+      
+      .has-search .form-control-feedback {
+          left: 89%;
+          top: 10%;
+          z-index: 2;
+          display: block;
+          width: 2.375rem;
+          height: 2.375rem;
+          line-height: 2.375rem;
+          text-align: center;
+          pointer-events: none;
+          color: #aaa;
+      } 
+      </style>
+    <style>
+        .dropdown-submenu {
+            position: relative;
+        }
+
+        .dropdown-submenu>.dropdown-menu {
+            top: 10%;
+            left: 100%;
+            margin-top: -6px;
+            margin-left: 0;
+            border-radius: 0.25rem;
+            display: none;
+        }
+
+        .dropdown-submenu:hover>.dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-submenu>a::after {
+            border-bottom: 0.3em solid transparent;
+            border-left-color: inherit;
+            border-left-style: solid;
+            border-left-width: 0.3em;
+            border-top: 0.3em solid transparent;
+            content: " ";
+            display: block;
+            float: right;
+            height: 0;
+            margin-right: -0.6em;
+            margin-top: -0.95em;
+            width: auto;
+            display: none;
+        }
+
+        .dropdown-submenu.pull-left {
+            float: none;
+            display: none;
+        }
+
+        .dropdown-submenu.pull-left>.dropdown-menu {
+            left: -70%;
+        }
+
+        .dropdown-menu .divider {
+            background-color: #e5e5e5;
+            height: 1px;
+            margin: 0px 0;
+            overflow: hidden;
+        }
+    </style>
+  
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script></head>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="spinner"></div>
+    </div>
+    <!-- ##### Header Area Start ##### -->
+    <header class="header-area">
+
+
+        <!-- Top Header Area -->
+
+
+        <!-- Navbar Area -->
+        <div class="clever-main-menu">
+            <div class="classy-nav-container breakpoint-off">
+                <!-- Menu -->
+                <nav class="classy-navbar justify-content-between" id="cleverNav">
+
+                    <!-- Logo -->
+                    <a class="nav-brand" href="{% url 'home' %}"><strong>Compaign</strong></a>
+
+                    <!-- Navbar Toggler -->
+                    <div class="classy-navbar-toggler">
+                        <span class="navbarToggler"><span></span><span></span><span></span></span>
+                    </div>
+
+                    <!-- Menu -->
+                    <div class="classy-menu">
+
+                        <!-- Close Button -->
+                        <div class="classycloseIcon">
+                            <div class="cross-wrap"><span class="top"></span><span class="bottom"></span></div>
+                        </div>
+
+                        <!-- Nav Start -->
+                        <div class="classynav" >
+                            <ul style="margin-top: 12px;">
+                                {% if request.user.is_authenticated %}
+                                <!-- <li><a href="{% url 'social-post' %}">Social Post</a></li> -->
+                                <li><a href="{% url 'social-post' %}">Social Post</a></li>
+                                <li><a href="{% url 'post' %}">Email Newsletter</a></li>
+                                <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                                {% else %}
+                                <li><a href="{% url 'home' %}">Home</a></li>
+                                {% endif %}
+                                <li><a href="{% url 'contact' %}">Contact Us</a></li>
+
+                            </ul>
+
+                            <!-- Search Button -->
+                            <div class="search-area">
+                                <!-- <form action="{% url 'search' %}" method="GET">
+                                    {% csrf_token %}
+                                    <input type="text" name="query"  placeholder="Search">
+                                    <button type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+                                </form> -->
+                            </div>
+
+                            <!-- Register / Login -->
+                            {% block register %}
+
+                            <div class="register-login-area">
+                                {% if request.user.is_authenticated %}
+                                <a href="{% url 'profile' request.user.username  %}"
+                                    class="btn">{{ request.user.username }}</a>
+                                <a href="{% url 'logout' %}" class="btn">logout</a>
+                                {% else %}
+                                <a href="{% url 'register' %}" class="btn">Register</a>
+                                <a href="{% url 'login' %}" class="btn active">Login</a>
+                                {% endif %}
+                            </div>
+                            {%  endblock %}
+                        </div>
+                        <!-- Nav End -->
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+    <!-- ##### Header Area End ##### -->
+
+
+    {% block content %}
+
+    {% endblock %}
+
+    <!-- ##### All Javascript Script ##### -->
+    <!-- jQuery-2.2.4 js -->
+    <script src="{% static 'music/js/jquery-2.2.4.min.js' %}"></script>
+    <!-- Popper js -->
+    <script src="{% static 'music/js/popper.min.js' %}"></script>
+    <!-- Bootstrap js -->
+    <script src="{% static 'music/js/bootstrap.min.js' %}"></script>
+    <!-- All Plugins js -->
+    <script src="{% static  'music/js/plugins.js' %}"></script>
+    <!-- Active js -->
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+    $( function() {
+      $( "#datepicker" ).datepicker();
+    } );
+    </script>
+    <script src="{% static 'music/js/active.js' %}"></script>
+
+    </body>
+    </html>

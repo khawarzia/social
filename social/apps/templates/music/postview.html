@@ -1,0 +1,78 @@
+{% extends 'Base.html' %}
+{% block content %}
+<div class="container">
+    
+        {% if form.errors %}
+        {% for field in form %}
+        {% for error in field.errors %}
+        <div class="alert alert-danger">
+          There is error in  {{ field.name }} &nbsp;&nbsp;&nbsp; <strong>{{ error|escape }}</strong>
+        </div>
+        {% endfor %}
+        {% endfor %}
+        {% endif %}
+    <form method="POST">
+        {% csrf_token %}
+        
+        <div class="card" style=" width: auto;">
+                <div class="shadow p-3 bg-white rounded">
+
+                    <div class="card-header text-center bg-transparent border-0">
+                        <h3>
+                                Compaign
+                        </h3>
+
+                    </div>
+                    {% if ret %}
+                    <div class="alert alert-primary text-center" role="alert">
+                        {{ret}}
+                    </div>
+                    {% endif %}
+
+                    <div class="card-body">
+                           
+                        <div class="form-group">
+                            <label>Title</label>
+                            <input type="text" name="title" maxlength="150" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Message</label>
+                            <textarea type="text" name="message" maxlength="150" class="form-control"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Delivery Date</label>
+                            <input type="datetime" id="datepicker" name="delivery_date" maxlength="150" class="form-control">
+                        </div>
+                    <p>
+                        <br>
+                        {% if emobj %}
+                            <input type="submit" class="btn btn-warning" value="Save">
+                        {% endif %}
+
+                       
+                    </div>
+                    {% if emobj %}
+                    <div class="card-footer text-center">
+                        <p>
+                            You have already registered your email. Click <a href="{% url 'email-change' %}">here</a> to change your credentials.
+                        </p>
+                    </div>
+                    {% else %}
+                    <div class="card-footer text-center">
+                        <p>
+                            Please register your email <a href="{% url 'email-login' %}">here</a> in order to send the mail.
+                        </p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+     
+      
+       
+
+    </form>
+</div>
+{% endblock %}
+
+
