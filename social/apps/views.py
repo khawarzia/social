@@ -574,7 +574,7 @@ def add_to_insta(name,passs,post_content,image_to_post):
 
 def post_to_fb_page(name,passs,post_content,page_name):
     opt = webdriver.ChromeOptions()
-    #opt.add_argument('--headless')
+    opt.add_argument('--headless')
     opt.add_argument('--no-sandbox')
     opt.add_experimental_option('excludeSwitches',['enable-automation'])
     driver = webdriver.Chrome(options=opt)
