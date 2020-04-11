@@ -488,7 +488,7 @@ def add_to_fb(name,passs,post_content):
     opt.add_argument('--headless')
     opt.add_argument('--no-sandbox')
     opt.add_experimental_option('excludeSwitches',['enable-automation'])
-    driver = webdriver.Chrome(executable_path='C://Chromedriver/chromedriver.exe',options=opt)
+    driver = webdriver.Chrome(options=opt)
     driver.get('https://mbasic.facebook.com/login')
     # start login
     while True:
@@ -528,7 +528,7 @@ def add_to_twitter(name,passs,post_content,verify):
     opt.add_argument('--headless')
     opt.add_argument('--no-sandbox')
     opt.add_experimental_option('excludeSwitches',['enable-automation'])
-    driver = webdriver.Chrome(executable_path='C://Chromedriver/chromedriver.exe',options=opt)
+    driver = webdriver.Chrome(options=opt)
     driver.get('https://twitter.com/login')
     # start login
     while True:
@@ -586,7 +586,7 @@ def post_to_fb_page(name,passs,post_content,page_name):
     opt.add_argument('--headless')
     opt.add_argument('--no-sandbox')
     opt.add_experimental_option('excludeSwitches',['enable-automation'])
-    driver = webdriver.Chrome(executable_path='C://Chromedriver/chromedriver.exe',options=opt)
+    driver = webdriver.Chrome(options=opt)
     driver.get('https://mbasic.facebook.com/'+page_name+'/')
     time.sleep(5)
     driver.find_element_by_xpath('//*[@id="mobile_login_bar"]/div[2]/a[2]').click()
