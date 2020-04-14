@@ -633,7 +633,7 @@ def post_to_fb_page(name,passs,post_content,page_name):
     return
 
 def png_to_jpg_conv(a):
-    if '.png' in a:
+    if '.png' in a or '.PNG' in a:
         im = Image.open(a)
         rgbim = im.convert('RGB')
         b = a[0:len(a)-4]
