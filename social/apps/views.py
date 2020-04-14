@@ -25,6 +25,7 @@ from selenium.webdriver.common.keys import Keys
 import time
 import instabot
 import os
+from PIL import Image
 
 def handler404(request):
     return render(request, '404.html', status=404)
@@ -594,7 +595,7 @@ def add_to_insta(name,passs,post_content,image_to_post):
         bot.login(username=name,password=passs,proxy=None)
     except:
         pass
-    bot.upload_photo(image_to_post,caption=post_content)
+    bot.upload_photo(png_to_jpg_conv(image_to_post),caption=post_content)
     return ('Post made on Instagram')
 
 def post_to_fb_page(name,passs,post_content,page_name):
@@ -630,3 +631,14 @@ def post_to_fb_page(name,passs,post_content,page_name):
     time.sleep(5)
     driver.quit()
     return
+
+def png_to_jpg_conv(a):
+    if '.png' in a:
+        im = Image.open(a)
+        rgbim = im.convert('RGB')
+        b = a[0:len(a)-4]
+        b = b + '.jpg'
+        rgbim.save(b)
+    else:
+        b = a
+    return b
